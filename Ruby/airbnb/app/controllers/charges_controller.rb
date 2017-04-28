@@ -4,7 +4,8 @@ class ChargesController < ApplicationController
 
 	def create
 	  # Amount in cents
-	  @amount = 500
+		@booking = Booking.find(params[:id])
+	  @amount = (@booking.room.price*100).to_i
 
 	  customer = Stripe::Customer.create(
 	    :email => params[:stripeEmail],
@@ -14,8 +15,8 @@ class ChargesController < ApplicationController
 	  charge = Stripe::Charge.create(
 	    :customer    => customer.id,
 	    :amount      => @amount,
-	    :description => 'Rails Stripe customer',
-	    :currency    => 'usd'
+	    :description => 'Booking id: #{@booking.id}',
+	    :currency    => 'aud'
 	  )
 
 	rescue Stripe::CardError => e
